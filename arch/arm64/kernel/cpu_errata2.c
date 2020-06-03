@@ -20,31 +20,6 @@
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/cpufeature.h>
-#include <linux/percpu.h>
-#include <linux/init.h>
-#include <linux/stop_machine.h>
-
-typedef void (*bp_hardening_cb_t)(void);
-
-struct bp_hardening_data {
-	bp_hardening_cb_t	fn;
-};
-
-DECLARE_PER_CPU_READ_MOSTLY(struct bp_hardening_data, bp_hardening_data);
-
-static struct bp_hardening_data *arm64_get_bp_hardening_data(void)
-{
-	return this_cpu_ptr(&bp_hardening_data);
-}
-
-void arm64_apply_bp_hardening(void)
-{
-	struct bp_hardening_data *d;
-
-	d = arm64_get_bp_hardening_data();
-	if (d->fn)
-		d->fn();
-}
 
 static bool __maybe_unused
 is_affected_midr_range(const struct arm64_cpu_capabilities *entry)
@@ -53,21 +28,6 @@ is_affected_midr_range(const struct arm64_cpu_capabilities *entry)
 				       entry->midr_range_min,
 				       entry->midr_range_max);
 }
-
-#include <asm/mmu.h>
-#include <asm/mmu_context.h>
-#include <asm/cacheflush.h>
-
-DEFINE_PER_CPU_READ_MOSTLY(struct bp_hardening_data, bp_hardening_data);
-
-static void  install_bp_hardening_cb(bp_hardening_cb_t fn)
-{
-	__this_cpu_write(bp_hardening_data.fn, fn);
-}
-
-#include <uapi/linux/psci.h>
-#include <linux/arm-smccc.h>
-#include <linux/psci.h>
 
 #define MIDR_RANGE(model, min, max) \
 	.matches = is_affected_midr_range, \

@@ -1063,7 +1063,7 @@ CONFIG_NET_SCHED=y
 # Queueing/Scheduling
 #
 # CONFIG_NET_SCH_CBQ is not set
-CONFIG_NET_SCH_HTB=y
+#CONFIG_NET_SCH_HTB=y
 # CONFIG_NET_SCH_HFSC is not set
 # CONFIG_NET_SCH_PRIO is not set
 # CONFIG_NET_SCH_MULTIQ is not set
@@ -1086,6 +1086,7 @@ CONFIG_NET_SCH_HTB=y
 # CONFIG_NET_SCH_PIE is not set
 # CONFIG_NET_SCH_INGRESS is not set
 # CONFIG_NET_SCH_PLUG is not set
+CONFIG_NET_SCH_CAKE=y
 
 #
 # Classification
